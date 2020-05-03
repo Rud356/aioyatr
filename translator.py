@@ -95,7 +95,7 @@ class Translator:
         data = {
             "key": self.key,
             'text': text,
-            'lang': f'{from_language}-{self.to_language}',
+            'lang': f'{from_language}-{to_language}',
             'format': self.text_format
         }
 
