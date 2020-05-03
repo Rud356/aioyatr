@@ -5,6 +5,7 @@ except ImportError: import json
 # If you reading this - hello from Rud!
 # Github repo: https://github.com/Rud356/aioyatr
 
+
 class Translator:
     supported = {
         'az','sq','am','en','ar','hy','af','eu','ba','be','bn','my',
