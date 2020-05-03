@@ -1,0 +1,1 @@
+name = 'aio_yandex_translate'
