@@ -26,10 +26,10 @@ class Translator:
         hint = []
     ):
         self.key = str(key)
-        if language not in Translator.supported:
+        if to_language not in Translator.supported:
             raise ValueError("You setted wrong language")
 
-        self.language = to_language
+        self._language = to_language
         if text_format not in Translator.valid_text_formats:
             raise ValueError("You setted incorrect text format")
 
@@ -38,15 +38,15 @@ class Translator:
 
     @property
     def to_language(self):
-        return self.language
+        return self._language
 
-    @property.setter
+    @to_language.setter
     def to_language(self, value: str):
         value = str(value)
         if value not in Translator.supported:
             raise ValueError("You setting wrong language")
 
-        self.language = value
+        self._language = value
 
     async def detect_lang(self, text):
         url = Translator.base_url + 'detect?'
@@ -63,19 +63,20 @@ class Translator:
                 url, params=data
             )
 
-            if response.status_code == 401:
+            if response.status == 401:
                 raise self.exc.TranslatorKeyInvalid('Invalid API key')
 
-            if response.status_code == 402:
+            if response.status == 402:
                 raise self.exc.TranslatorKeyBlocked('Blocked API key')
 
-            if response.status_code == 404:
+            if response.status == 404:
                 raise self.exc.TranslatorError('Ran out of daily limit of translated text')
 
-            if response.status_code != 200:
+            if response.status != 200:
                 raise self.exc.TranslatorError(f"Failed detecting language ({response.reason})")
 
-            return response.json().get('lang')
+            data = await response.json()
+            return data['lang']
 
     async def translate(self, text, from_language=None, to_language=None):
         if not from_language:
@@ -93,7 +94,7 @@ class Translator:
         data = {
             "key": self.key,
             'text': text,
-            'lang': f'{self.to_language}-{from_language}',
+            'lang': f'{from_language}-{self.to_language}',
             'format': self.text_format
         }
 
@@ -104,28 +105,29 @@ class Translator:
                 url, params=data
             )
 
-            if response.status_code == 401:
+            if response.status == 401:
                 raise self.exc.TranslatorKeyInvalid('Invalid API key')
 
-            if response.status_code == 402:
+            if response.status == 402:
                 raise self.exc.TranslatorKeyBlocked('Blocked API key')
 
-            if response.status_code == 404:
+            if response.status == 404:
                 raise self.exc.TranslatorError('Ran out of daily limit of translated text')
 
-            if response.status_code == 413:
+            if response.status == 413:
                 raise self.exc.TranslatorError('Too long text')
 
-            if response.status_code == 501:
+            if response.status == 501:
                 raise self.exc.TranslatorError('This translation direction unsupproted')
 
-            if response.status_code != 200:
+            if response.status != 200:
                 raise self.exc.TranslatorError(f"Failed detecting language ({response.reason})")
 
-            return response.json()['text'][0]
+            data = await response.json()
+            return data['text'][0]
 
     class exc:
         class TranslatorError(Exception): ...
-        class TranslatorKeyInvalid(Translator.exc.TranslatorError): ...
-        class TranslatorKeyBlocked(Translator.exc.TranslatorError): ...
-        class TranslatorLanguage(Translator.exc.TranslatorError): ...
+        class TranslatorKeyInvalid(TranslatorError): ...
+        class TranslatorKeyBlocked(TranslatorError): ...
+        class TranslatorLanguage(TranslatorError): ...
