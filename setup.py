@@ -1,15 +1,22 @@
 import setuptools
 
+with open('README.md') as f:
+    text = f.read()
+
 setuptools.setup(
-    name='aio_yandex_translate',
-    version='1.0',
+    name="aio_yandex_translate",
+    version="1.0",
     author="Rud356",
-    author_email='devastator12a@mail.ru',
+    author_email="devastator12a@mail.ru",
     description="Yandex translate async api wrapper",
-    license='GPLv3',
+    long_description=text,
+    long_description_content_type="text/markdown",
+    license="GPLv3",
     url="https://github.com/Rud356/aioyatr",
-    install_requires=['aiohttp>=3.6',],
-    extras_require={'ujson':'1.35'},
+    packages=["aio_yandex_translate"],
+    package_dir={"aio_yandex_translate": ""},
+    install_requires=["aiohttp>=3.6",],
+    extras_require={"ujson":"1.35"},
     classifiers=[
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
@@ -19,5 +26,5 @@ setuptools.setup(
         "Intended Audience :: Developers",
         "Natural Language :: English",
     ],
-    python_requires='>=3.6'
+    python_requires=">=3.6"
 )
