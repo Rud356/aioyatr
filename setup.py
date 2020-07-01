@@ -16,7 +16,7 @@ setuptools.setup(
     packages=["aio_yandex_translate"],
     package_dir={"aio_yandex_translate": ""},
     install_requires=["aiohttp>=3.6", "aiohttp-proxy>=0.1.2"],
-    extras_require={"ujson":"1.35"},
+    extras_require={"ujson": "1.35"},
     classifiers=[
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",

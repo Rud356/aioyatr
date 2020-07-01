@@ -34,11 +34,11 @@ class Translator:
 
     def __init__(
         self,
-        key: str,
+        key: str, *,
+        proxy: str = '',
         to_language: str = 'en',
-        text_format='plain',
-        hint=[],
-        proxy: str = ''
+        text_format: str = 'plain',
+        hints: list = []
     ):
         self.key = str(key)
         if to_language not in Translator.supported:
@@ -53,11 +53,15 @@ class Translator:
         if proxy:
             self.connector = ProxyConnector.from_url(proxy)
 
-        self.hint = hint
+        for hint in hints:
+            if hint not in self.supported:
+                raise ValueError(f"Invalid language in hint list: `{hint}`")
+
+        self.hints = list(hints)
         self.text_format = text_format
 
     @property
-    def proxy(self):
+    def proxy(self) -> str:
         return self.proxy_url
 
     @proxy.setter
@@ -66,23 +70,35 @@ class Translator:
         self.connector = ProxyConnector.from_url(url)
 
     @property
-    def to_language(self):
+    def to_language(self) -> str:
         return self._language
 
     @to_language.setter
-    def to_language(self, value: str):
+    def to_language(self, value: str) -> None:
         value = str(value)
         if value not in Translator.supported:
             raise ValueError("You setting wrong language")
 
         self._language = value
 
-    async def detect_lang(self, text):
+    def add_hint(self, lang: str) -> bool:
+        """
+        Returns True if successfully added hint
+        """
+        if lang in self.supported:
+            if lang not in self.hints:
+                self.hints.append(lang)
+
+            return True
+
+        return False
+
+    async def detect_lang(self, text: str) -> str:
         url = Translator.base_url + 'detect?'
         data = {
             'key': self.key,
             'text': text,
-            'hint': ','.join(self.hint)
+            'hint': ','.join(self.hints)
         }
 
         async with aiohttp.ClientSession(
@@ -112,7 +128,9 @@ class Translator:
             data = await response.json()
             return data['lang']
 
-    async def translate(self, text, from_language=None, to_language=None):
+    async def translate(
+        self, text: str, from_language: str = None, to_language: str = None
+    ) -> str:
         if not from_language:
             from_language = await self.detect_lang(text)
 
