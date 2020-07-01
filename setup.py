@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setuptools.setup(
     name="aio_yandex_translate",
-    version="1.1.0",
+    version="1.1.1",
     author="Rud356",
     author_email="devastator12a@mail.ru",
     description="Yandex translate async api wrapper",
@@ -16,7 +16,7 @@ setuptools.setup(
     packages=["aio_yandex_translate"],
     package_dir={"aio_yandex_translate": ""},
     install_requires=["aiohttp>=3.6", "aiohttp-proxy>=0.1.2"],
-    extras_require={"ujson": "1.35"},
+    extras_require={"ujson": ""},
     classifiers=[
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",

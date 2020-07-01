@@ -41,7 +41,7 @@ loop.run_until_complete(main())
 
 See [aiohttp-proxy](https://pypi.org/project/aiohttp-proxy/), it should also support socks proxies
 
-Changing proxies on a go
+Changing proxies on the go
 
 ```python
 import asyncio
@@ -76,9 +76,7 @@ loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
 ```
 
-You also may use keyword argument `hint` to give a list of languages, that should be preffered when detecting langs  
-To add new hint you should use function `add_hint` with passed lang parameter 
-in return you'll get bool value representing if it was added  
+To add a new hint you should use the function `add_hint` with passed `lang` parameter and in return you'll get bool value representing if it was added  
 To remove lang from hints:
 
 ```python
